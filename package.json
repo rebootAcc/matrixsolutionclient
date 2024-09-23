@@ -1,0 +1,41 @@
+{
+  "name": "matrix-solution",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview --port 1010"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.3.3",
+    "axios": "^1.7.2",
+    "jwt-decode": "^4.0.0",
+    "quill": "^2.0.2",
+    "react": "^18.3.1",
+    "react-animated-slider": "^2.0.0",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-quill": "^2.0.0",
+    "react-router-dom": "^6.24.0",
+    "react-slick": "^0.30.2",
+    "react-spring": "^9.7.3",
+    "slick-carousel": "^1.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.19",
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.3.1"
+  }
+}

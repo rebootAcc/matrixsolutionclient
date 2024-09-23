@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate {
+  animation: slideInFromLeft 0.5s ease forwards;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.slidefromright {
+  animation: slideInFromRight 0.5s ease forwards;
+}
+
+@keyframes slideUpFromBottom {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.bottomToTop {
+  animation: slideUpFromBottom 0.5s ease forwards;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.ql-container {
+  height: fit-content;
+}
+.ql-container.ql-snow {
+  border: 0px solid #ccc;
+}
+.ql-toolbar .ql-formats button,
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-item {
+  color: white !important;
+}
+
+.ql-toolbar .ql-picker-label::before,
+.ql-toolbar .ql-picker-item::before {
+  color: white !important;
+}
+.ql-snow .ql-picker-options {
+  background-color: black;
+}
+
+.ql-toolbar .ql-stroke {
+  stroke: white !important;
+}
+
+.ql-toolbar .ql-fill {
+  fill: white !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("../src/assets/Roboto/Roboto-Regular.ttf");
+}

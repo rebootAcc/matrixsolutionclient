@@ -1,0 +1,246 @@
+.boxsh {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 7px;
+}
+.toggle {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.5s ease-in-out;
+}
+
+.bars {
+  width: 100%;
+  height: 4px;
+  background-color: blue;
+  border-radius: 4px;
+  transition: transform 0.5s ease-in-out, width 0.5s ease-in-out;
+}
+
+#bar2 {
+  transition-duration: 0.8s;
+}
+
+#bar1,
+#bar3 {
+  width: 100%;
+}
+
+.menu-open .bars {
+  position: absolute;
+  transition: transform 0.5s ease-in-out, width 0.5s ease-in-out;
+}
+
+.menu-open #bar2 {
+  transform: scaleX(0);
+}
+
+.menu-open #bar1 {
+  width: 100%;
+  transform: rotate(45deg);
+}
+
+.menu-open #bar3 {
+  width: 100%;
+  transform: rotate(-45deg);
+}
+
+.menu-open {
+  transform: rotate(180deg);
+}
+/* Menu container styles */
+.menu-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.menu-container.open {
+  max-height: 100vh;
+  transition: max-height 0.5s ease-in-out;
+}
+.menu-container.closed {
+  max-height: 0;
+  transform: translateY(-100%);
+}
+.sm\\:flex {
+  transition: transform 0.5s ease-in-out;
+  transform: translateY(-100%);
+}
+
+.menu-container.open .sm\\:flex {
+  transform: translateY(0);
+}
+.menu-container.close .sm\\:flex {
+  transform: translateY(0); /* Translate back to the bottom */
+}
+.text-shadow {
+  text-shadow: 1px 1px 3px #834e09;
+}
+.box-shadow {
+  box-shadow: 8px 8px #ca003d73;
+}
+
+/* hover css */
+.category-item {
+  position: relative;
+  text-align: center;
+}
+
+.category-img {
+  transition: transform 0.3s ease, border-radius 0.3s ease;
+}
+
+.category-img.hovered {
+  transform: scale(1.1);
+  border-radius: 50%;
+}
+
+.category-name {
+  position: absolute;
+  bottom: 10px;
+  left: 40%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.category-item:hover .category-name {
+  opacity: 1;
+}
+.productpage-product-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-details {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 7.5em;
+}
+.product-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 7.5em; /* Adjust based on your line height */
+}
+.ql-snow p {
+  color: white;
+}
+
+/* loader css */
+
+.loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.jimu-primary-loading:before,
+.jimu-primary-loading:after {
+  position: absolute;
+  top: 0;
+  content: "";
+}
+
+.jimu-primary-loading:before {
+  left: -19.992px;
+}
+
+.jimu-primary-loading:after {
+  left: 19.992px;
+  -webkit-animation-delay: 0.32s !important;
+  animation-delay: 0.32s !important;
+}
+
+.jimu-primary-loading:before,
+.jimu-primary-loading:after,
+.jimu-primary-loading {
+  background: #da0000;
+  -webkit-animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+  animation: loading-keys-app-loading 0.8s infinite ease-in-out;
+  width: 13.6px;
+  height: 32px;
+}
+
+.jimu-primary-loading {
+  text-indent: -9999em;
+  margin: auto;
+  position: absolute;
+  right: calc(50% - 6.8px);
+  top: calc(50% - 16px);
+  -webkit-animation-delay: 0.16s !important;
+  animation-delay: 0.16s !important;
+}
+
+@-webkit-keyframes loading-keys-app-loading {
+  0%,
+  80%,
+  100% {
+    opacity: 0.75;
+    -webkit-box-shadow: 0 0 #da0000;
+    box-shadow: 0 0 #da0000;
+    height: 32px;
+  }
+
+  40% {
+    opacity: 1;
+    -webkit-box-shadow: 0 -8px #da0000;
+    box-shadow: 0 -8px #da0000;
+    height: 40px;
+  }
+}
+
+@keyframes loading-keys-app-loading {
+  0%,
+  80%,
+  100% {
+    opacity: 0.75;
+    -webkit-box-shadow: 0 0 #da0000;
+    box-shadow: 0 0 #da0000;
+    height: 32px;
+  }
+
+  40% {
+    opacity: 1;
+    -webkit-box-shadow: 0 -8px #da0000;
+    box-shadow: 0 -8px #da0000;
+    height: 40px;
+  }
+}
+
+.threelinelimit {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limits to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ul {
+  list-style-type: disc; /* Ensure bullet points are displayed */
+  padding-left: 20px; /* Indentation for bullet points */
+}
+
+li {
+  margin-bottom: 0.5rem; /* Space between bullet points */
+}
