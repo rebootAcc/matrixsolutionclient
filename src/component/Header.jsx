@@ -9,7 +9,7 @@ const Header = () => {
   const [menuopen, setMenuopen] = useState(false);
   const [subcategories, setSubcategories] = useState({});
   const [subSubDropdownStates, setSubSubDropdownStates] = useState({});
-  const [brands, setBrands] = useState([]); // Store unique brands here
+
   const headerRef = useRef(null);
   const togglemenuopen = () => {
     setMenuopen(!menuopen);
@@ -71,6 +71,77 @@ const Header = () => {
 
     fetchSubcategories();
   }, []);
+
+  const handleNestedDropdownToggle = (categoryIndex, subIndex) => {
+    setDropdownStates((prevState) => {
+      // Close all other sub-dropdowns at the same level
+      const updatedState = { ...prevState };
+
+      Object.keys(updatedState).forEach((key) => {
+        // Only reset states for other subcategories within the same category
+        if (
+          key.startsWith(`${categoryIndex}-`) &&
+          key !== `${categoryIndex}-${subIndex}`
+        ) {
+          updatedState[key] = false;
+        }
+      });
+
+      // Toggle the current subcategory dropdown
+      updatedState[`${categoryIndex}-${subIndex}`] =
+        !prevState[`${categoryIndex}-${subIndex}`];
+      return updatedState;
+    });
+  };
+
+  const handleLevel3DropdownToggle = (categoryIndex, subIndex, thirdIndex) => {
+    setDropdownStates((prevState) => {
+      const updatedState = { ...prevState };
+
+      // Close all other 3rd-level dropdowns in the same category/subcategory
+      Object.keys(updatedState).forEach((key) => {
+        if (
+          key.startsWith(`${categoryIndex}-${subIndex}-`) &&
+          key !== `${categoryIndex}-${subIndex}-${thirdIndex}`
+        ) {
+          updatedState[key] = false;
+        }
+      });
+
+      // Toggle the current 3rd-level dropdown
+      updatedState[`${categoryIndex}-${subIndex}-${thirdIndex}`] =
+        !prevState[`${categoryIndex}-${subIndex}-${thirdIndex}`];
+      return updatedState;
+    });
+  };
+
+  const handleLevel4DropdownToggle = (
+    categoryIndex,
+    subIndex,
+    thirdIndex,
+    fourthIndex
+  ) => {
+    setDropdownStates((prevState) => {
+      const updatedState = { ...prevState };
+
+      // Close all other 4th-level dropdowns in the same subcategory/3rd level
+      Object.keys(updatedState).forEach((key) => {
+        if (
+          key.startsWith(`${categoryIndex}-${subIndex}-${thirdIndex}-`) &&
+          key !== `${categoryIndex}-${subIndex}-${thirdIndex}-${fourthIndex}`
+        ) {
+          updatedState[key] = false;
+        }
+      });
+
+      // Toggle the current 4th-level dropdown
+      updatedState[
+        `${categoryIndex}-${subIndex}-${thirdIndex}-${fourthIndex}`
+      ] =
+        !prevState[`${categoryIndex}-${subIndex}-${thirdIndex}-${fourthIndex}`];
+      return updatedState;
+    });
+  };
 
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -142,7 +213,7 @@ const Header = () => {
               key={index}
               onMouseEnter={() => toggleDropdown(index)}
               onMouseLeave={() => toggleDropdown(index)}
-              className={`font-medium lg:text-sm xlg:text-lg hover:bg-red-600 h-[6rem] flex justify-center items-center lg:px-2 xlg:px-4  ${
+              className={`font-medium lg:text-sm xlg:text-lg hover:bg-red-600 h-[6rem] flex justify-center items-center lg:px-2 xlg:px-4 ${
                 location.pathname === navbar.link
                   ? "text-[#FFB800A6]"
                   : "text-white"
@@ -156,59 +227,151 @@ const Header = () => {
                   >
                     <div>{navbar.name}</div>
                   </button>
-                  {navbar.name === "BRANDS" && (
-                    <div className="w-full flex items-center justify-center z-50">
-                      <div
-                        className={`bg-white absolute z-50 top-8 shadow-md mt-1 grid ${getGridColumnsClass(
-                          brands
-                        )}`}
-                      ></div>
-                    </div>
-                  )}
                   {dropdownStates[index] && navbar.name !== "BRANDS" && (
-                    <div className="w-full flex items-center justify-center z-50 bg-white ">
-                      <div
-                        className={`bg-white absolute  z-50 top-[4.1rem] xlg:w-[10rem] lg:w-[10rem] shadow-md mt-1 grid grid-cols-1`}
-                      >
-                        <div className="absolute top-[-1.2rem] flex justify-center items-center left-[1rem] transform -translate-x-1/2 xlg:w-[10rem] lg:w-[10rem]">
-                          <IoMdArrowDropup className="text-[#313846]  text-3xl" />
+                    <div className="absolute z-50 top-[4.1rem]  -left-4 flex justify-center items-center">
+                      <div className="bg-white w-[10rem] shadow-md  grid grid-cols-1">
+                        <div className="absolute top-[-1rem] left-[1rem] w-[10rem]">
+                          <IoMdArrowDropup className="text-[#313846] text-2xl" />
                         </div>
+                        {subcategories[navbar.name]?.map((sub, subIndex) => (
+                          <div key={subIndex} className="relative group">
+                            <Link
+                              to={`/products/${
+                                navbar.name
+                              }/${formatSubcategoryLink(sub.name)}`}
+                              className="flex py-4 px-2 justify-between text-[#313846] font-[200] text-sm border-b-[0.5px] hover:bg-[#FFB800A6] relative"
+                              onMouseEnter={() =>
+                                handleNestedDropdownToggle(index, subIndex)
+                              }
+                            >
+                              {sub.name}
+                              {sub.subsubcategories?.length > 0 && (
+                                <span className="ml-2">▸</span>
+                              )}
+                            </Link>
 
-                        {subcategories[navbar.name] &&
-                          subcategories[navbar.name].map((item, i) => (
-                            <div key={i} className="relative group">
-                              <Link
-                                to={`/products/${
-                                  navbar.name
-                                }/${formatSubcategoryLink(item.name)}`}
-                                className="flex py-4 px-2 justify-between text-[#313846] font-[200] text-sm border-b-[0.5px] hover:bg-[#FFB800A6] relative"
-                              >
-                                {item.name}
-                                {item.subsubcategories?.length > 0 && (
-                                  <span className="ml-2">▸</span>
-                                )}
-                              </Link>
-                              {item.subsubcategories?.length > 0 && (
-                                <div className="absolute left-full top-0 hidden max-h-[300px] overflow-y-auto no-scrollbar  group-hover:block w-[10rem] bg-white shadow-lg z-50">
-                                  {item.subsubcategories.map((subitem, j) => (
-                                    <Link
-                                      key={j}
-                                      to={`/products/${
-                                        navbar.name
-                                      }/${formatSubcategoryLink(
-                                        item.name
-                                      )}/${formatSubcategoryLink(
-                                        subitem.name
-                                      )}`}
-                                      className="block px-2 py-4 font-[200] text-sm text-[#313846] hover:bg-gray-100"
-                                    >
-                                      {subitem.name}
-                                    </Link>
-                                  ))}
+                            {dropdownStates[`${index}-${subIndex}`] &&
+                              sub.subsubcategories?.length > 0 && (
+                                <div className="absolute left-full top-0 w-[10rem] bg-white shadow-lg z-50">
+                                  {sub.subsubcategories.map(
+                                    (subsub, subsubIndex) => (
+                                      <div
+                                        key={subsubIndex}
+                                        className="relative group"
+                                      >
+                                        <Link
+                                          to={`/products/${
+                                            navbar.name
+                                          }/${formatSubcategoryLink(
+                                            sub.name
+                                          )}/${formatSubcategoryLink(
+                                            subsub.name
+                                          )}`}
+                                          className="block px-2 py-4 text-sm text-[#313846] hover:bg-gray-100"
+                                          onMouseEnter={() =>
+                                            handleLevel3DropdownToggle(
+                                              index,
+                                              subIndex,
+                                              subsubIndex
+                                            )
+                                          }
+                                        >
+                                          {subsub.name}
+                                          {subsub.lavel3CategorySchema?.length >
+                                            0 && (
+                                            <span className="ml-2">▸</span>
+                                          )}
+                                        </Link>
+
+                                        {dropdownStates[
+                                          `${index}-${subIndex}-${subsubIndex}`
+                                        ] &&
+                                          subsub.lavel3CategorySchema?.length >
+                                            0 && (
+                                            <div className="absolute left-full top-0 w-[10rem] bg-white shadow-lg z-50">
+                                              {subsub.lavel3CategorySchema.map(
+                                                (lavel3, lavel3Index) => (
+                                                  <div
+                                                    key={lavel3Index}
+                                                    className="relative group"
+                                                  >
+                                                    <Link
+                                                      to={`/products/${
+                                                        navbar.name
+                                                      }/${formatSubcategoryLink(
+                                                        sub.name
+                                                      )}/${formatSubcategoryLink(
+                                                        subsub.name
+                                                      )}/${formatSubcategoryLink(
+                                                        lavel3.name
+                                                      )}`}
+                                                      className="block px-2 py-4 text-sm text-[#313846] hover:bg-gray-100"
+                                                      onMouseEnter={() =>
+                                                        handleLevel4DropdownToggle(
+                                                          index,
+                                                          subIndex,
+                                                          subsubIndex,
+                                                          lavel3Index
+                                                        )
+                                                      }
+                                                    >
+                                                      {lavel3.name}
+                                                      {lavel3
+                                                        .lavel4CategorySchema
+                                                        ?.length > 0 && (
+                                                        <span className="ml-2">
+                                                          ▸
+                                                        </span>
+                                                      )}
+                                                    </Link>
+
+                                                    {dropdownStates[
+                                                      `${index}-${subIndex}-${subsubIndex}-${lavel3Index}`
+                                                    ] &&
+                                                      lavel3
+                                                        .lavel4CategorySchema
+                                                        ?.length > 0 && (
+                                                        <div className="absolute left-full top-0 w-[10rem] bg-white shadow-lg z-50">
+                                                          {lavel3.lavel4CategorySchema.map(
+                                                            (
+                                                              lavel4,
+                                                              lavel4Index
+                                                            ) => (
+                                                              <Link
+                                                                key={
+                                                                  lavel4Index
+                                                                }
+                                                                to={`/products/${
+                                                                  navbar.name
+                                                                }/${formatSubcategoryLink(
+                                                                  sub.name
+                                                                )}/${formatSubcategoryLink(
+                                                                  subsub.name
+                                                                )}/${formatSubcategoryLink(
+                                                                  lavel3.name
+                                                                )}/${formatSubcategoryLink(
+                                                                  lavel4.name
+                                                                )}`}
+                                                                className="block px-2 py-4 text-sm text-[#313846] hover:bg-gray-100"
+                                                              >
+                                                                {lavel4.name}
+                                                              </Link>
+                                                            )
+                                                          )}
+                                                        </div>
+                                                      )}
+                                                  </div>
+                                                )
+                                              )}
+                                            </div>
+                                          )}
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               )}
-                            </div>
-                          ))}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}

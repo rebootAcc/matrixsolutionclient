@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import MainPageTemplate from "../../template/MainPageTemplate";
 import SubBanner from "./SubPageBanner";
-import ProductCategoryComponent from "./ProductCategoryComponent";
 import FooterComponent from "../FooterComponent";
 import { IoMdMenu } from "react-icons/io";
 import axios from "axios";
+import LoadingAnimation from "../admindashboardcomponent/LoadingAnimation";
+import FrontendLoadingANimation from "./FrontendLoadingANimation";
 
 const ProductPageDesignComponent = () => {
   const { category, subcategory, brand, subsubcategory } = useParams(); // Get the category from URL
@@ -13,72 +14,87 @@ const ProductPageDesignComponent = () => {
   const [products, setProducts] = useState([]);
   const [noProductsFound, setNoProductsFound] = useState(false); // New state for no products found
   const navigate = useNavigate();
-
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [limit] = useState(15);
+  const [loading, setLoading] = useState(false); // Loading state for lazy loading
+  const [hasMore, setHasMore] = useState(true); // To track if more products are available
+  const observerRef = useRef();
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      let url = "";
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    const params = new URLSearchParams({
+      page: currentPage,
+      limit: limit,
+    });
 
-      if (brand) {
-        url = `${import.meta.env.VITE_BASE_URL}/api/products/brand/${brand}`;
-      } else if (category && subcategory && subsubcategory) {
-        url = `${
-          import.meta.env.VITE_BASE_URL
-        }/api/products/category/${category}/subcategory/${subcategory}/subsubcategory/${subsubcategory}`;
-      } else if (category && subcategory) {
-        url = `${
-          import.meta.env.VITE_BASE_URL
-        }/api/products/category/${category}/subcategory/${subcategory}`;
-      } else if (category) {
-        url = `${
-          import.meta.env.VITE_BASE_URL
-        }/api/products/category/${category}`;
+    // Add filters based on URL params
+    if (brand) {
+      params.append("brand", brand);
+    }
+    if (category) {
+      params.append("categoryName", category);
+    }
+    if (subcategory) {
+      params.append("subCategoryName", subcategory);
+    }
+    if (subsubcategory) {
+      params.append("subSubCategoryName", subsubcategory);
+    }
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/products/all?${params.toString()}`
+      );
+
+      const fetchedProducts = response.data.data;
+
+      if (fetchedProducts.length === 0) {
+        setHasMore(false); // No more products available
+      } else {
+        // Ensure no duplicate products are added
+        setProducts((prevProducts) => {
+          const newProducts = fetchedProducts.filter(
+            (newProduct) =>
+              !prevProducts.some(
+                (prevProduct) => prevProduct._id === newProduct._id
+              )
+          );
+          return [...prevProducts, ...newProducts];
+        });
       }
-      console.log(subsubcategory);
-      try {
-        const response = await axios.get(url);
-        if (response.data.length === 0) {
-          setNoProductsFound(true);
-        } else {
-          setNoProductsFound(false);
-          setProducts(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setNoProductsFound(true);
-      }
-    };
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setNoProductsFound(true);
+      setLoading(false);
+    }
+  }, [category, subcategory, subsubcategory, brand, currentPage, limit]);
+
+  useEffect(() => {
     fetchProducts();
-  }, [category, subcategory, subsubcategory, brand]);
+  }, [fetchProducts]);
+
+  const lastProductElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observerRef.current) observerRef.current.disconnect(); // Disconnect previous observer
+      observerRef.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setCurrentPage((prevPage) => prevPage + 1); // Load next set of products
+        }
+      });
+      if (node) observerRef.current.observe(node); // Observe the last product element
+    },
+    [loading, hasMore]
+  );
 
   const Productdetails = (productId) => {
     navigate(`/product-details/${productId}`);
   };
-
-  const productcategory = [
-    {
-      name: "Graphics Card",
-      link: "/products/PC COMPONENTS/Graphics Cards",
-    },
-    { name: "Processor", link: "/products/PC COMPONENTS/Processor%20%20CPU" },
-    {
-      name: "Monitors",
-      link: "/products/PC PERIPHERALS/Output Devices/Monitor",
-    },
-    { name: "Gaming Chair", link: "/products/PC PERIPHERALS/Gaming Chair" },
-    {
-      name: "Motherboard",
-      link: "/products/PC COMPONENTS/Motherboard",
-    },
-    { name: "Memory", link: "/products/PC COMPONENTS/Memory%20%20RAM" },
-    {
-      name: "Power Supply Units",
-      link: "/products/PC COMPONENTS/Power Supply Units",
-    },
-  ];
 
   return (
     <MainPageTemplate>
@@ -145,7 +161,15 @@ const ProductPageDesignComponent = () => {
               </div>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
                 {products.map((product, index) => (
-                  <div className="flex justify-center items-center" key={index}>
+                  <div
+                    className="flex justify-center items-center"
+                    key={index}
+                    ref={
+                      index === products.length - 1
+                        ? lastProductElementRef
+                        : null
+                    } // Set the ref on the last product
+                  >
                     <div
                       className={`flex flex-col rounded-lg boxsh ${
                         !product.active ? "opacity-50" : ""
@@ -155,7 +179,7 @@ const ProductPageDesignComponent = () => {
                         <span className="flex justify-center items-center">
                           <img
                             src={product.productthumbnailimage}
-                            alt=""
+                            alt="Product Thumbnail"
                             className="h-[12rem] w-[15rem]"
                           />
                         </span>
@@ -164,7 +188,7 @@ const ProductPageDesignComponent = () => {
                             {product.title}
                           </span>
                           <span
-                            className={`text-sm text-center  product-details ${
+                            className={`text-sm text-center product-details ${
                               !product.active
                                 ? "text-red-600"
                                 : "text-[#777777]"
@@ -187,6 +211,11 @@ const ProductPageDesignComponent = () => {
                   </div>
                 ))}
               </div>
+              {loading && (
+                <div className="flex justify-center items-center py-10">
+                  <FrontendLoadingANimation />
+                </div>
+              )}
             </>
           )}
         </div>

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import emailjs from "@emailjs/browser";
-import { useNavigate } from "react-router-dom";
 
-const EnquiryBoxComponent = ({ product }) => {
+const EnquiryBoxComponent = ({ product, close }) => {
   const [formData, setFormData] = useState({
     name: "",
     mobileNumber: "",
@@ -10,8 +8,6 @@ const EnquiryBoxComponent = ({ product }) => {
     quantity: "",
     message: "",
   });
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,40 +17,41 @@ const EnquiryBoxComponent = ({ product }) => {
     e.preventDefault();
     const { name, mobileNumber, location, quantity, message } = formData;
 
-    if (!name || !mobileNumber || !location || !quantity || !message) {
+    if (!name || !mobileNumber || !location || !quantity) {
       alert("Please fill in all fields");
       return;
     }
 
-    const emailParams = {
-      ...formData,
-      productName: product.title,
-      productBrand: product.brand,
-      productCategory: product.categoryName,
-    };
+    // Create the message for WhatsApp
+    const whatsappMessage = `
+      *Enquiry Details:*\n
+      *Product Name:* ${product.title}\n
+      *Product Brand:* ${product.brand}\n
+      *Product Category:* ${product.categoryName}\n
+      *Name:* ${name}\n
+      *Mobile Number:* ${mobileNumber}\n
+      *Location:* ${location}\n
+      *Quantity:* ${quantity}\n
+      *Message:* ${message}
+    `;
 
-    emailjs
-      .send(
-        "service_cueqm93",
-        "template_soq2uy8",
-        emailParams,
-        "O7VIy8tYdVThaMh67"
-      )
-      .then((response) => {
-        alert("Your Order Have Submited!");
-        setFormData({
-          name: "",
-          mobileNumber: "",
-          location: "",
-          quantity: "",
-          message: "",
-        });
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Error sending email:", error);
-        alert("An error occurred while sending your enquiry.");
-      });
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+
+    const isDesktop = window.matchMedia("(min-width: 1024px)").matches;
+    const whatsappUrl = isDesktop
+      ? `https://web.whatsapp.com/send?phone=919476383750&text=${encodedMessage}`
+      : `https://api.whatsapp.com/send?phone=919476383750&text=${encodedMessage}`;
+
+    window.open(whatsappUrl, "_blank");
+
+    setFormData({
+      name: "",
+      mobileNumber: "",
+      location: "",
+      quantity: "",
+      message: "",
+    });
+    close();
   };
 
   return (

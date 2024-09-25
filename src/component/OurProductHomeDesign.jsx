@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { MdKeyboardDoubleArrowRight } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const OurProductHomeDesign = ({
   content,
@@ -9,34 +9,31 @@ const OurProductHomeDesign = ({
   category,
   subcategory,
 }) => {
-  const { heading, link } = content;
+  const { heading } = content;
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/products/category/${category}`
-        );
-        // Apply filtering based on category and subcategory
-        let filteredProducts = response.data.filter((product) => {
-          if (subcategory) {
-            return (
-              product.categoryName === category &&
-              product.subCategoryName === subcategory
-            );
-          }
-          return product.categoryName === category;
-        });
+        // Construct query parameters
+        const params = new URLSearchParams();
+        if (category) params.append("categoryName", category);
+        if (subcategory) params.append("subCategoryName", subcategory);
+        params.append("limit", 8); // Limit the number of products to 8
 
-        // Limit to 8 products
-        filteredProducts = filteredProducts.slice(0, 8);
-        setProducts(filteredProducts);
+        const response = await axios.get(
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/api/products/all?${params.toString()}`
+        );
+
+        setProducts(response.data.data || []); // Assuming the products are in the `data` array
       } catch (error) {
         console.error("Error fetching products:", error);
       }
     };
+
     fetchProducts();
   }, [category, subcategory]);
 
@@ -83,7 +80,7 @@ const OurProductHomeDesign = ({
                 <span className="flex justify-center items-center">
                   <img
                     src={product.productthumbnailimage}
-                    alt=""
+                    alt="Product Thumbnail"
                     className="lg:h-[12rem] sm:w-[12rem] sm:h-[8rem] lg:w-[15rem]"
                   />
                 </span>
@@ -92,7 +89,7 @@ const OurProductHomeDesign = ({
                     {product.title}
                   </span>
                   <span
-                    className={`text-sm text-center  product-details ${
+                    className={`text-sm text-center product-details ${
                       !product.active ? "text-red-600" : "text-[#777777]"
                     }`}
                     dangerouslySetInnerHTML={{

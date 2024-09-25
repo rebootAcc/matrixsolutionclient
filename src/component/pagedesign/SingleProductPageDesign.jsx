@@ -31,11 +31,12 @@ const SingleProductPageDesign = () => {
 
         // Fetch similar products from the same category
         const similarResponse = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/api/products/category/${
+          `${import.meta.env.VITE_BASE_URL}/api/products/all?categoryName=${
             response.data.categoryName
           }`
         );
-        setSimilarProducts(similarResponse.data);
+
+        setSimilarProducts(similarResponse.data.data || []);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -376,7 +377,7 @@ const SingleProductPageDesign = () => {
                 Close
               </button>
               {selectedComponent === "EnquiryBoxComponent" && (
-                <EnquiryBoxComponent product={product} />
+                <EnquiryBoxComponent product={product} close={closeModal} />
               )}
             </div>
           </div>

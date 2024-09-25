@@ -54,6 +54,11 @@ const EditProduct = () => {
   const [editSpecificationName, setEditSpecificationName] = useState("");
   const [editSpecificationDetails, setEditSpecificationDetails] = useState("");
 
+  const [selected3rdLevelCategory, setSelected3rdLevelCategory] = useState("");
+  const [selected4thLevelCategory, setSelected4thLevelCategory] = useState("");
+  const [thirdLevelCategories, setThirdLevelCategories] = useState([]);
+  const [fourthLevelCategories, setFourthLevelCategories] = useState([]);
+
   const fetchBrands = async () => {
     try {
       const response = await axios.get(
@@ -83,6 +88,8 @@ const EditProduct = () => {
         setCategoryName(product.categoryName);
         setSubCategoryName(product.subCategoryName);
         setSubSubCategoryName(product.subSubCategoryName);
+        setSelected3rdLevelCategory(product.level3subCategoryName);
+        setSelected4thLevelCategory(product.level4subCategoryName);
         setTitle(product.title);
         setBrand(product.brand);
         setBrandImage(product.brandimage);
@@ -239,6 +246,58 @@ const EditProduct = () => {
       }
     }
   }, [subCategoryName, categoryName, mainCategories]);
+  useEffect(() => {
+    if (subSubCategoryName) {
+      const mainCat = mainCategories.find(
+        (cat) => cat.mainCategory === categoryName
+      );
+      const subCat = mainCat?.subcategories.find(
+        (sub) => sub.name === subCategoryName
+      );
+      const subSubCat = subCat?.subsubcategories.find(
+        (subsub) => subsub.name === subSubCategoryName
+      );
+
+      if (subSubCat) {
+        setThirdLevelCategories(subSubCat.lavel3CategorySchema || []);
+        setSelected3rdLevelCategory(selected3rdLevelCategory);
+        setSelected4thLevelCategory("");
+      } else {
+        setThirdLevelCategories([]);
+        setFourthLevelCategories([]);
+      }
+    }
+  }, [subSubCategoryName, categoryName, subCategoryName, mainCategories]);
+
+  // Fetch 4th level categories based on 3rd level selection
+  useEffect(() => {
+    if (selected3rdLevelCategory) {
+      const mainCat = mainCategories.find(
+        (cat) => cat.mainCategory === categoryName
+      );
+      const subCat = mainCat?.subcategories.find(
+        (sub) => sub.name === subCategoryName
+      );
+      const subSubCat = subCat?.subsubcategories.find(
+        (subsub) => subsub.name === subSubCategoryName
+      );
+      const thirdLevelCat = subSubCat?.lavel3CategorySchema.find(
+        (level3) => level3.name === selected3rdLevelCategory
+      );
+
+      if (thirdLevelCat) {
+        setFourthLevelCategories(thirdLevelCat.lavel4CategorySchema || []);
+        setSelected4thLevelCategory(selected4thLevelCategory); // Reset 4th level category selection
+      } else {
+        setFourthLevelCategories([]); // Clear if no 4th level available
+      }
+    }
+  }, [
+    selected3rdLevelCategory,
+    subSubCategoryName,
+    subCategoryName,
+    categoryName,
+  ]);
 
   useEffect(() => {
     if (price && discount) {
@@ -259,6 +318,8 @@ const EditProduct = () => {
     formData.append("categoryName", categoryName);
     formData.append("subCategoryName", subCategoryName);
     formData.append("subSubCategoryName", subSubCategoryName);
+    formData.append("level3subCategoryName", selected3rdLevelCategory); // Add this
+    formData.append("level4subCategoryName", selected4thLevelCategory);
     formData.append("title", title);
     formData.append("brand", brand);
     formData.append("brandimage", brandimage);
@@ -381,6 +442,41 @@ const EditProduct = () => {
                 {subsubCategories.map((subsub) => (
                   <option key={subsub._id} value={subsub.name}>
                     {subsub.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label>Select 3rd Level Category*</label>
+              <select
+                name="level3subCategoryName"
+                value={selected3rdLevelCategory}
+                onChange={(e) => setSelected3rdLevelCategory(e.target.value)}
+                className="h-[3.5rem] p-2 bg-[#2A3038] text-white"
+              >
+                <option value="">Select 3rd Level Category</option>
+                {thirdLevelCategories.map((cat) => (
+                  <option key={cat._id} value={cat.name}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 w-full gap-4">
+            <div className="flex flex-col gap-2">
+              <label>Select 4th Level Category*</label>
+              <select
+                name="level4subCategoryName"
+                value={selected4thLevelCategory}
+                onChange={(e) => setSelected4thLevelCategory(e.target.value)}
+                className="h-[3.5rem] p-2 bg-[#2A3038] text-white"
+              >
+                <option value="">Select 4th Level Category</option>
+                {fourthLevelCategories.map((cat) => (
+                  <option key={cat._id} value={cat.name}>
+                    {cat.name}
                   </option>
                 ))}
               </select>

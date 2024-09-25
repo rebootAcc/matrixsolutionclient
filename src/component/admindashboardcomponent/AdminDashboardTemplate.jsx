@@ -27,10 +27,10 @@ const AdminDashboardTemplate = ({ children }) => {
   }
   return (
     <div className="flex flex-row gap-4 w-full bg-[#2E2F32] h-full overflow-hidden ">
-      <div className="w-[20%]">
+      <div className="xlg:w-[18%] lg:w-[20%]">
         <AdminSideHeader />
       </div>
-      <div className="w-[80%] flex flex-col gap-8 h-screen overflow-y-scroll">
+      <div className="xlg:w-[82%] lg:w-[80%] flex flex-col gap-8 h-screen overflow-y-scroll">
         <span>
           <AdminHeader />
         </span>

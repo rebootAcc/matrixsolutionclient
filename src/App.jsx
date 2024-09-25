@@ -53,6 +53,14 @@ function App() {
           path="/products/:category/:subcategory/:subsubcategory"
           element={<ProductPageDesignComponent />}
         />
+        <Route
+          path="/products/:category/:subcategory/:subsubcategory/:level3category"
+          element={<ProductPageDesignComponent />}
+        />
+        <Route
+          path="/products/:category/:subcategory/:subsubcategory/:level3category/:level4category"
+          element={<ProductPageDesignComponent />}
+        />
 
         {/* adminpanel */}
         <Route path="/reboots" element={<LoginPage />} />

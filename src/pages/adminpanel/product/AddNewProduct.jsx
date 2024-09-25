@@ -31,6 +31,10 @@ const AddNewProduct = () => {
   const [mainCategories, setMainCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subsubCategories, setSubsubCategories] = useState([]);
+  const [selected3rdLevelCategory, setSelected3rdLevelCategory] = useState("");
+  const [selected4thLevelCategory, setSelected4thLevelCategory] = useState("");
+  const [thirdLevelCategories, setThirdLevelCategories] = useState([]);
+  const [fourthLevelCategories, setFourthLevelCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -170,6 +174,8 @@ const AddNewProduct = () => {
     formData.append("categoryName", categoryName);
     formData.append("subCategoryName", selectedSubCategory);
     formData.append("subSubCategoryName", selectedSubsubCategory);
+    formData.append("level3subCategoryName", selected3rdLevelCategory);
+    formData.append("level4subCategoryName", selected4thLevelCategory);
     formData.append("title", title);
     formData.append("brand", brand);
     formData.append("brandimage", brandimage); // You may skip if it's coming from the brand
@@ -236,9 +242,10 @@ const AddNewProduct = () => {
     const formData = new FormData();
     formData.append("categoryName", categoryName);
     formData.append("subCategoryName", selectedSubCategory);
+    formData.append("lavel3CategoryName", selected3rdLevelCategory);
+    formData.append("lavel4CategoryName", selected4thLevelCategory);
     formData.append("title", title);
     formData.append("subSubCategoryName", selectedSubsubCategory);
-    formData.append("shortDescription", shortDescription);
     formData.append("bulletPoints", bulletPoints);
     formData.append("brand", brand);
     formData.append("brandimage", brandimage);
@@ -345,10 +352,12 @@ const AddNewProduct = () => {
       );
       if (mainCat) {
         setSubCategories(mainCat.subcategories || []);
-        setSelectedSubCategory(""); // Reset selected subcategory
-        setSelectedSubsubCategory(""); // Reset selected sub-subcategory
-      } else {
-        setSubCategories([]);
+        setSelectedSubCategory("");
+        setSelectedSubsubCategory("");
+        setSelected3rdLevelCategory("");
+        setSelected4thLevelCategory("");
+        setThirdLevelCategories([]);
+        setFourthLevelCategories([]);
       }
     } else {
       setSubCategories([]);
@@ -366,6 +375,10 @@ const AddNewProduct = () => {
       if (subCat) {
         setSubsubCategories(subCat.subsubcategories || []);
         setSelectedSubsubCategory("");
+        setSelected3rdLevelCategory("");
+        setSelected4thLevelCategory("");
+        setThirdLevelCategories([]);
+        setFourthLevelCategories([]);
       } else {
         setSubsubCategories([]);
       }
@@ -373,6 +386,60 @@ const AddNewProduct = () => {
       setSubsubCategories([]);
     }
   }, [selectedSubCategory, selectedMainCategory, mainCategories]);
+
+  useEffect(() => {
+    if (selectedSubsubCategory) {
+      const mainCat = mainCategories.find(
+        (cat) => cat.mainCategory === selectedMainCategory
+      );
+      const subCat = mainCat.subcategories.find(
+        (subcat) => subcat.name === selectedSubCategory
+      );
+      const subSubCat = subCat.subsubcategories.find(
+        (subsub) => subsub.name === selectedSubsubCategory
+      );
+      if (subSubCat) {
+        setThirdLevelCategories(subSubCat.lavel3CategorySchema || []);
+        setSelected3rdLevelCategory("");
+        setSelected4thLevelCategory("");
+        setFourthLevelCategories([]);
+      } else {
+        setThirdLevelCategories([]);
+      }
+    } else {
+      setThirdLevelCategories([]);
+    }
+  }, [selectedSubsubCategory, selectedSubCategory, selectedMainCategory]);
+
+  useEffect(() => {
+    if (selected3rdLevelCategory) {
+      const mainCat = mainCategories.find(
+        (cat) => cat.mainCategory === selectedMainCategory
+      );
+      const subCat = mainCat.subcategories.find(
+        (subcat) => subcat.name === selectedSubCategory
+      );
+      const subSubCat = subCat.subsubcategories.find(
+        (subsub) => subsub.name === selectedSubsubCategory
+      );
+      const thirdLevelCat = subSubCat.lavel3CategorySchema.find(
+        (lavel3) => lavel3.name === selected3rdLevelCategory
+      );
+      if (thirdLevelCat) {
+        setFourthLevelCategories(thirdLevelCat.lavel4CategorySchema || []);
+        setSelected4thLevelCategory("");
+      } else {
+        setFourthLevelCategories([]);
+      }
+    } else {
+      setFourthLevelCategories([]);
+    }
+  }, [
+    selected3rdLevelCategory,
+    selectedSubsubCategory,
+    selectedSubCategory,
+    selectedMainCategory,
+  ]);
 
   return (
     <AdminDashboardTemplate>
@@ -442,6 +509,52 @@ const AddNewProduct = () => {
                     value={subsub.name}
                   >
                     {subsub.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label>Select 3rd Level Category</label>
+              <select
+                name="lavel3CategoryName"
+                className="h-[3.5rem] p-2 focus:outline-none outline-[#5BC0DE] bg-[#2A3038] text-[white] rounded-sm"
+                value={selected3rdLevelCategory}
+                onChange={(e) => setSelected3rdLevelCategory(e.target.value)}
+              >
+                <option value="" className="text-[#CCCCCC2B]">
+                  select a 3rd level category
+                </option>
+                {thirdLevelCategories.map((lavel3) => (
+                  <option
+                    key={lavel3._id}
+                    className="text-white"
+                    value={lavel3.name}
+                  >
+                    {lavel3.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 w-full gap-4">
+            <div className="flex flex-col gap-2">
+              <label>Select 4th Level Category</label>
+              <select
+                name="lavel4CategoryName"
+                className="h-[3.5rem] p-2 focus:outline-none outline-[#5BC0DE] bg-[#2A3038] text-[white] rounded-sm"
+                value={selected4thLevelCategory}
+                onChange={(e) => setSelected4thLevelCategory(e.target.value)}
+              >
+                <option value="" className="text-[#CCCCCC2B]">
+                  select a 4th level category
+                </option>
+                {fourthLevelCategories.map((lavel4) => (
+                  <option
+                    key={lavel4._id}
+                    className="text-white"
+                    value={lavel4.name}
+                  >
+                    {lavel4.name}
                   </option>
                 ))}
               </select>

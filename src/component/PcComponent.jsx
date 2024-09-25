@@ -1,20 +1,20 @@
 import React from "react";
 import OurProductHomeDesign from "./OurProductHomeDesign";
 
-const GrapicCardComponent = () => {
+const PcComponent = () => {
   const content = {
-    heading: "PRE-BUILD PC",
-    link: "/products/PRE-BUILD PC",
+    heading: "PC COMPONENTS",
+    link: "/products/PC COMPONENTS",
   };
   return (
     <div>
       <OurProductHomeDesign
         showheader={true}
         content={content}
-        category="PRE-BUILD PC"
+        category="PC COMPONENTS"
       />
     </div>
   );
 };
 
-export default GrapicCardComponent;
+export default PcComponent;

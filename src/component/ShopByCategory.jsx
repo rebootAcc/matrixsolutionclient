@@ -16,7 +16,7 @@ const ShopByCategory = () => {
     {
       imgsrc: "/images/laptop.png",
       name: "Laptop",
-      link: "/products/PC COMPONENTS/Laptops",
+      link: "/products/MS STORE/Laptops",
     },
     {
       imgsrc: "/images/motherboard.jpg",

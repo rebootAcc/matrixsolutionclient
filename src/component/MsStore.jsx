@@ -1,20 +1,21 @@
 import React from "react";
 import OurProductHomeDesign from "./OurProductHomeDesign";
 
-const ProcessorComponent = () => {
+const MsStore = () => {
   const content = {
-    heading: "PC COMPONENTS",
-    link: "/products/PC COMPONENTS",
+    heading: "PC PERIPHERALS",
+    link: "/products/MS STORE",
   };
+
   return (
     <div>
       <OurProductHomeDesign
         showheader={true}
         content={content}
-        category="PC COMPONENTS"
+        category="MS STORE"
       />
     </div>
   );
 };
 
-export default ProcessorComponent;
+export default MsStore;

@@ -73,6 +73,9 @@ const SingleProductPageSimilerProductComponent = ({ similarProduct }) => {
     window.location.reload();
   };
 
+  if (!Array.isArray(products) || products.length === 0) {
+    return <div>No similar products available.</div>;
+  }
   return (
     <div>
       <div className="flex flex-col gap-6">

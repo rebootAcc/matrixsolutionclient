@@ -1,8 +1,8 @@
 import React from "react";
-
-import ProcessorComponent from "./ProcessorComponent";
-import MonitorandTvComponent from "./MonitorandTvComponent";
-import GrapicCardComponent from "./GrapicCardComponent";
+import PcComponent from "./PcComponent";
+import PcPeripheral from "./PcPeripheral";
+import PreBuildPC from "./PreBuildPC";
+import MsStore from "./MsStore";
 
 const OurProductOfMatrixSolution = () => {
   return (
@@ -11,9 +11,10 @@ const OurProductOfMatrixSolution = () => {
         Products of <span className="text-[#2D68DB]"> Matrix Solutions</span>
       </div>
       <div className="flex flex-col gap-8">
-        <ProcessorComponent />
-        <MonitorandTvComponent />
-        <GrapicCardComponent />
+        <PcComponent />
+        <PcPeripheral />
+        <PreBuildPC />
+        <MsStore />
       </div>
     </div>
   );

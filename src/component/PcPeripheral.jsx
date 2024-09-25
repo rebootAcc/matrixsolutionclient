@@ -1,7 +1,7 @@
 import React from "react";
 import OurProductHomeDesign from "./OurProductHomeDesign";
 
-const MonitorandTvComponent = () => {
+const PcPeripheral = () => {
   const content = {
     heading: "PC PERIPHERALS",
     link: "/products/PC PERIPHERALS",
@@ -18,4 +18,4 @@ const MonitorandTvComponent = () => {
   );
 };
 
-export default MonitorandTvComponent;
+export default PcPeripheral;
