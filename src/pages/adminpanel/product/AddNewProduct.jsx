@@ -185,7 +185,9 @@ const AddNewProduct = () => {
       !price ||
       !productthumbnailimage
     ) {
-      alert("Please fill in all required fields.");
+      alert(
+        "Please fill in all required fields. categoryname, title,brand,modelnumber,price,productthumbnail,productimages"
+      );
       return;
     }
 
@@ -868,7 +870,7 @@ const AddNewProduct = () => {
               className="xl:w-[10%] xlg:w-[15%] lg:w-[20%] md:w-[40%] h-[3.5rem] p-2 bg-[#5BC0DE] text-[white] rounded-sm"
               disabled={loading}
             >
-              {loading ? "Saving..." : "Save"}
+              {loading ? "Saving..." : "Publish"}
             </button>
             <button
               type="button"

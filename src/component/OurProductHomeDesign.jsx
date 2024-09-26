@@ -72,9 +72,9 @@ const OurProductHomeDesign = ({
 
       <div className="grid lg:grid-cols-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-4 lg:gap-8">
         {products.map((product, index) => (
-          <div className="flex justify-center items-center" key={index}>
+          <div className="flex justify-center items-center w-full" key={index}>
             <div
-              className={`flex flex-col rounded-lg boxsh ${
+              className={`flex flex-col rounded-lg boxsh w-full h-full ${
                 !product.active ? "opacity-50" : ""
               }`}
             >
@@ -102,12 +102,14 @@ const OurProductHomeDesign = ({
                   ></span>
                 </div>
               </div>
-              <button
-                onClick={() => Productdetails(product.productId)}
-                className="lg:h-[4rem] md:h-[3.5rem] sm:h-[2.5rem] w-full bg-[#2D68DB] text-white rounded-b-lg flex justify-center items-center sm:text-base md:text-lg lg:text-xl font-semibold"
-              >
-                {product.active ? "View Details" : "Unavailable"}
-              </button>
+              <div className="w-full flex justify-end items-end h-full">
+                <button
+                  onClick={() => Productdetails(product.productId)}
+                  className="lg:h-[4rem] md:h-[3.5rem] sm:h-[2.5rem] w-full bg-[#2D68DB] text-white rounded-b-lg flex justify-center items-center sm:text-base md:text-lg lg:text-xl font-semibold"
+                >
+                  {product.active ? "View Details" : "Unavailable"}
+                </button>
+              </div>
             </div>
           </div>
         ))}
