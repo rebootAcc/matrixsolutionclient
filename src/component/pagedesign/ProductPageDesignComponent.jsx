@@ -43,7 +43,7 @@ const ProductPageDesignComponent = () => {
     if (subsubcategory) {
       params.append("subSubCategoryName", subsubcategory);
     }
-
+    params.append("isdraft", "false");
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/products/all?${params.toString()}`

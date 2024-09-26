@@ -263,11 +263,10 @@ const AddNewProduct = () => {
     const formData = new FormData();
     formData.append("categoryName", categoryName);
     formData.append("subCategoryName", selectedSubCategory);
-    formData.append("lavel3CategoryName", selected3rdLevelCategory);
-    formData.append("lavel4CategoryName", selected4thLevelCategory);
+    formData.append("level3subCategoryName", selected3rdLevelCategory);
+    formData.append("level4subCategoryName", selected4thLevelCategory);
     formData.append("title", title);
     formData.append("subSubCategoryName", selectedSubsubCategory);
-    formData.append("bulletPoints", bulletPoints);
     formData.append("brand", brand);
     formData.append("brandimage", brandimage);
     formData.append("modelNumber", modelNumber);
@@ -872,7 +871,7 @@ const AddNewProduct = () => {
           <div className="flex flex-row gap-4 items-center">
             <button
               type="submit"
-              className="w-[10%] h-[3.5rem] p-2 bg-[#5BC0DE] text-[white] rounded-sm"
+              className="xl:w-[10%] xlg:w-[15%] lg:w-[20%] md:w-[40%] h-[3.5rem] p-2 bg-[#5BC0DE] text-[white] rounded-sm"
               disabled={loading}
             >
               {loading ? "Saving..." : "Save"}
@@ -880,7 +879,7 @@ const AddNewProduct = () => {
             <button
               type="button"
               onClick={handleSaveAsDraft}
-              className="w-[10%] h-[3.5rem] p-2 bg-[#5BC0DE] text-[white] rounded-sm"
+              className="xl:w-[10%] xlg:w-[15%] lg:w-[20%] md:w-[40%] h-[3.5rem] p-2 bg-[#5BC0DE] text-[white] rounded-sm"
               disabled={loading}
             >
               {loading ? "Saving as Draft..." : "Save As Draft"}

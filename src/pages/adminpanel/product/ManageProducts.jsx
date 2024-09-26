@@ -19,6 +19,7 @@ const ManageProducts = () => {
   const itemsPerPage = 15;
   const [totalPages, setTotalPages] = useState(0);
   const [loadingPage, setLoadingPage] = useState(false);
+  const [isDraftFilter, setIsDraftFilter] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,6 +39,10 @@ const ManageProducts = () => {
           params.append("brand", selectedBrand);
         }
 
+        if (isDraftFilter) {
+          params.append("isdraft", "true");
+        }
+
         const response = await axios.get(
           `${
             import.meta.env.VITE_BASE_URL
@@ -49,7 +54,8 @@ const ManageProducts = () => {
 
         setProducts(data);
         setCurrentPage(page);
-        setTotalPages(totalPages); // assuming totalPages is returned from the backend
+        console.log("Current Page: ", page, "Total Pages: ", totalPages);
+        setTotalPages(totalPages);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -58,7 +64,7 @@ const ManageProducts = () => {
     };
 
     fetchProducts();
-  }, [currentPage, selectedCategory, selectedBrand]);
+  }, [currentPage, selectedCategory, selectedBrand, isDraftFilter]);
 
   useEffect(() => {
     const fetchCategoriesAndBrands = async () => {
@@ -141,31 +147,33 @@ const ManageProducts = () => {
   const currentItems = products;
 
   useEffect(() => {
-    setTotalPages(Math.ceil(products.length / itemsPerPage));
-  }, [products, itemsPerPage]);
+    setTotalPages(totalPages);
+  }, [products, totalPages]);
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber); // Correctly update page
+    }
   };
 
   const handleNext = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
   const handlePrev = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+      setCurrentPage((prevPage) => prevPage - 1);
     }
   };
 
+  // Render pagination
   const pageRange = 5; // Number of page links to show
   let startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
-  let endPage = startPage + pageRange - 1;
+  let endPage = Math.min(totalPages, startPage + pageRange - 1);
 
-  if (endPage > totalPages) {
-    endPage = totalPages;
+  if (endPage === totalPages) {
     startPage = Math.max(1, endPage - pageRange + 1);
   }
 
@@ -197,6 +205,17 @@ const ManageProducts = () => {
               </option>
             ))}
           </select>
+          <button
+            onClick={() => {
+              setIsDraftFilter(!isDraftFilter);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 text-white h-[4rem] gap-2 justify-center items-center text-lg font-semibold ${
+              isDraftFilter ? "bg-[#63B263]" : "bg-[#191C20]"
+            }`}
+          >
+            {isDraftFilter ? "Show All Products" : "Show Drafts Only"}
+          </button>
           <Link
             to={"/reboots/product/admin-dashboard-add-new-product"}
             className="flex w-[20%] bg-[#191C20] text-white h-[4rem] gap-2 justify-center items-center text-lg font-semibold "
@@ -278,41 +297,42 @@ const ManageProducts = () => {
                 )}
               </div>
               {/* Pagination */}
+              {/* Pagination */}
               <div className="flex justify-center gap-2 mt-4">
+                {/* Previous Button */}
                 <button
                   onClick={handlePrev}
-                  disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-md  text-lg ${
-                    currentPage === 1
-                      ? "text-gray-400 font-semibold "
-                      : "text-white font-bold"
+                  disabled={currentPage === 1} // Disable if on first page
+                  className={`px-4 py-2 rounded-md text-lg ${
+                    currentPage === 1 ? "text-gray-400" : "text-white"
                   }`}
                 >
                   Prev
                 </button>
-                {Array.from(
-                  { length: endPage - startPage + 1 },
-                  (_, idx) => startPage + idx
-                ).map((pageNumber) => (
-                  <button
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    className={`${
-                      pageNumber === currentPage
-                        ? " text-white"
-                        : " text-[#CCCCCC]"
-                    } px-4 py-2 rounded-md font-bold text-lg`}
-                  >
-                    {pageNumber}
-                  </button>
-                ))}
+
+                {/* Page Numbers */}
+                {Array.from({ length: totalPages }, (_, idx) => idx + 1).map(
+                  (pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber)}
+                      className={`px-4 py-2 rounded-md font-bold text-lg ${
+                        pageNumber === currentPage
+                          ? "text-white"
+                          : "text-[#CCCCCC]"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                )}
+
+                {/* Next Button */}
                 <button
                   onClick={handleNext}
-                  disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-md  text-lg ${
-                    currentPage === totalPages
-                      ? "text-gray-400 font-semibold"
-                      : "text-white font-bold"
+                  disabled={currentPage === totalPages} // Disable if on last page
+                  className={`px-4 py-2 rounded-md text-lg ${
+                    currentPage === totalPages ? "text-gray-400" : "text-white"
                   }`}
                 >
                   Next
