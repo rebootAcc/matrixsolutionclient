@@ -316,9 +316,9 @@ const ManageProducts = () => {
                     <button
                       key={pageNumber}
                       onClick={() => handlePageChange(pageNumber)}
-                      className={`px-4 py-2 rounded-md font-bold text-lg ${
+                      className={`px-4 py-2 rounded-md  text-lg ${
                         pageNumber === currentPage
-                          ? "text-white"
+                          ? "text-white font-bold"
                           : "text-[#CCCCCC]"
                       }`}
                     >

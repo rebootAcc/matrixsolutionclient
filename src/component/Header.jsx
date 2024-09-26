@@ -396,12 +396,16 @@ const Header = () => {
       </div>
 
       {/* Mobile Menu */}
-      <div className="sm:flex md:justify-between md:items-center sm:justify-between sm:items-center w-full sm:px-9 px-0 lg:hidden">
+      <div className="sm:flex md:justify-between md:items-center sm:justify-between sm:items-center w-full sm:px-3 md:px-6 px-0 lg:hidden">
         <Link
-          href={"/"}
+          to={"/"}
           className="lg:hidden text-xl z-[100] text-white font-semibold"
         >
-          <img src="/images/logo.svg" alt="logo" className="size-28" />
+          <img
+            src="/images/logo.svg"
+            alt="logo"
+            className="md:size-[6rem] sm:size-[5rem]"
+          />
         </Link>
 
         <button onClick={togglemenuopen} className="">

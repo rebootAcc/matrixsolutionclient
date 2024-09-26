@@ -189,9 +189,13 @@ const SingleProductPageDesign = () => {
                   {product.brand}
                 </div>
               </div>
-              <div className="flex flex-col gap-4 border-b border-[#D6D6D6] pb-6">
+              <div className="flex flex-col gap-4 border-b border-[#D6D6D6] lg:pb-4 xlg:pb-6">
                 <div className="flex text-2xl text-[#777777] text-semibold items-center gap-1">
-                  <span className="text-xl">MRP</span> <s>{product.price}</s>
+                  <span className="text-xl">MRP</span>
+                  <span className="strikethrough">
+                    <MdCurrencyRupee />
+                    {product.price}
+                  </span>
                 </div>
                 <div className="flex items-center gap-5">
                   <span className="flex text-2xl text-[#E20000] text-semibold items-center">
@@ -230,17 +234,23 @@ const SingleProductPageDesign = () => {
                   )}
                 </div>
               </div>
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-1 md:grid-cols-2 sm:gap-3 md:gap-2 lg:gap-4 xlg:gap-4">
                 {information.map((item, index) => (
                   <div className="flex items-center gap-2" key={index}>
                     <div>
-                      <img src={item.img} alt="" className="h-[3rem]" />
+                      <img
+                        src={item.img}
+                        alt=""
+                        className="xlg:h-[3rem] sm:h-[2.5rem]"
+                      />
                     </div>
                     <div className="flex flex-col">
-                      <div className="text-lg text-[#444444] font-semibold">
+                      <div className="xlg:text-lg sm:text-base md:text-sm text-[#444444] font-semibold">
                         {item.name}
                       </div>
-                      <div className="text-[#888888]">{item.details}</div>
+                      <div className="text-[#888888] xlg:text-base sm:text-sm md:text-xs">
+                        {item.details}
+                      </div>
                     </div>
                   </div>
                 ))}

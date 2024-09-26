@@ -245,16 +245,10 @@ const AddNewProduct = () => {
     e.preventDefault();
 
     // Check for required fields
-    if (
-      !categoryName ||
-      !title ||
-      !brand ||
-      !brandimage ||
-      !modelNumber ||
-      !price ||
-      !productthumbnailimage
-    ) {
-      alert("Please fill in all required fields.");
+    if (!title || !modelNumber || !brand) {
+      alert(
+        "Please fill in the required fields for the draft (Title, Model Number, and Brand)."
+      );
       return;
     }
 

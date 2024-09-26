@@ -22,6 +22,8 @@ const OurProductHomeDesign = ({
         if (subcategory) params.append("subCategoryName", subcategory);
         params.append("limit", 8); // Limit the number of products to 8
         params.append("isdraft", "false");
+        params.append("active", "true");
+
         const response = await axios.get(
           `${
             import.meta.env.VITE_BASE_URL

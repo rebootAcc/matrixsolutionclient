@@ -341,12 +341,12 @@ const EditProduct = () => {
   ]);
 
   useEffect(() => {
+    const cleanPrice = price ? parseFloat(price.replace(/,/g, "")) : 0; // Fallback to 0 if price is null/undefined
     if (price && discount) {
-      const cleanPrice = parseFloat(price.replace(/,/g, ""));
       const discountValue = (cleanPrice * parseFloat(discount)) / 100;
       setOfferPrice(Math.round(cleanPrice - discountValue));
     } else {
-      setOfferPrice(Math.round(parseFloat(price.replace(/,/g, ""))));
+      setOfferPrice(Math.round(cleanPrice)); // Set offerPrice to price if no discount
     }
   }, [price, discount]);
 
@@ -389,10 +389,12 @@ const EditProduct = () => {
         }/api/products/update/${productId}?page=${page}`,
         formData
       );
-      navigate("/reboots/product/admin-dashboard-manage-product");
+      navigate(`/reboots/product/admin-dashboard-manage-product?page=${page}`);
     } catch (error) {
       console.error("Error updating product:", error);
-      alert("Error updating product, please contact the developer.");
+      alert(
+        "Please provide all required fields (category, model number, title, brand, price, product thumbnail image, and images) for publishing."
+      );
     } finally {
       setLoading(false);
     }
@@ -453,7 +455,7 @@ const EditProduct = () => {
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label>Select Sub Category*</label>
+              <label>Select Sub Category</label>
               <select
                 name="subCategoryName"
                 value={subCategoryName}
@@ -472,7 +474,7 @@ const EditProduct = () => {
 
           <div className="grid grid-cols-2 w-full gap-4">
             <div className="flex flex-col gap-2">
-              <label>Select Sub Sub Category*</label>
+              <label>Select Sub Sub Category</label>
               <select
                 name="subSubCategoryName"
                 value={subSubCategoryName}
@@ -488,7 +490,7 @@ const EditProduct = () => {
               </select>
             </div>
             <div className="flex flex-col gap-2">
-              <label>Select 3rd Level Category*</label>
+              <label>Select 3rd Level Category</label>
               <select
                 name="level3subCategoryName"
                 value={selected3rdLevelCategory}
@@ -507,7 +509,7 @@ const EditProduct = () => {
 
           <div className="grid grid-cols-2 w-full gap-4">
             <div className="flex flex-col gap-2">
-              <label>Select 4th Level Category*</label>
+              <label>Select 4th Level Category</label>
               <select
                 name="level4subCategoryName"
                 value={selected4thLevelCategory}
