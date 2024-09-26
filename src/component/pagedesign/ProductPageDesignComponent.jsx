@@ -23,6 +23,14 @@ const ProductPageDesignComponent = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  useEffect(() => {
+    setProducts([]); // Clear the products when URL params change
+    setNoProductsFound(false); // Reset no products found state
+    setCurrentPage(1); // Reset pagination
+    setHasMore(true); // Reset the "has more" state
+    setLoading(true); // Show loading initially
+  }, [category, subcategory, brand, subsubcategory]);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const params = new URLSearchParams({
@@ -51,20 +59,23 @@ const ProductPageDesignComponent = () => {
 
       const fetchedProducts = response.data.data;
 
-      if (fetchedProducts.length === 0) {
+      if (fetchedProducts.length === 0 && currentPage === 1) {
+        setNoProductsFound(true); // No products available on the first page
+        setHasMore(false); // Stop further requests
+      } else if (fetchedProducts.length < limit) {
         setHasMore(false); // No more products available
-      } else {
-        // Ensure no duplicate products are added
-        setProducts((prevProducts) => {
-          const newProducts = fetchedProducts.filter(
-            (newProduct) =>
-              !prevProducts.some(
-                (prevProduct) => prevProduct._id === newProduct._id
-              )
-          );
-          return [...prevProducts, ...newProducts];
-        });
       }
+
+      setProducts((prevProducts) => {
+        // Ensure no duplicate products are added
+        const newProducts = fetchedProducts.filter(
+          (newProduct) =>
+            !prevProducts.some(
+              (prevProduct) => prevProduct._id === newProduct._id
+            )
+        );
+        return [...prevProducts, ...newProducts];
+      });
 
       setLoading(false);
     } catch (error) {
@@ -162,7 +173,7 @@ const ProductPageDesignComponent = () => {
               <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
                 {products.map((product, index) => (
                   <div
-                    className="flex justify-center items-center"
+                    className="flex justify-center items-center h-full w-full"
                     key={index}
                     ref={
                       index === products.length - 1
@@ -171,7 +182,7 @@ const ProductPageDesignComponent = () => {
                     } // Set the ref on the last product
                   >
                     <div
-                      className={`flex flex-col rounded-lg boxsh ${
+                      className={`flex flex-col rounded-lg boxsh h-full w-full  ${
                         !product.active ? "opacity-50" : ""
                       }`}
                     >
@@ -201,12 +212,14 @@ const ProductPageDesignComponent = () => {
                           ></span>
                         </div>
                       </div>
-                      <button
-                        onClick={() => Productdetails(product.productId)}
-                        className="lg:h-[4rem] md:h-[3.5rem] sm:h-[2.5rem] w-full bg-[#2D68DB] text-white rounded-b-lg flex justify-center items-center sm:text-base md:text-lg lg:text-xl font-semibold"
-                      >
-                        {product.active ? "View Details" : "Unavailable"}
-                      </button>
+                      <div className="h-full flex justify-end items-end">
+                        <button
+                          onClick={() => Productdetails(product.productId)}
+                          className="lg:h-[4rem] md:h-[3.5rem] sm:h-[2.5rem] w-full bg-[#2D68DB] text-white rounded-b-lg flex justify-center items-center sm:text-base md:text-lg lg:text-xl font-semibold"
+                        >
+                          {product.active ? "View Details" : "Unavailable"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
