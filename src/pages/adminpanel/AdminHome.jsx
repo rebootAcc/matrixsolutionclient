@@ -1,13 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminDashboardTemplate from "../../component/admindashboardcomponent/AdminDashboardTemplate";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const AdminHome = () => {
-  const categories = [
-    { name: "Total Category", number: "100" },
-    { name: "Sub Category", number: "100" },
-    { name: "Total Products", number: "100" },
-    { name: "Total Enquiry", number: "100" },
+  const [categoryStats, setCategoryStats] = useState({
+    totalCategories: 0,
+    totalSubCategories: 0,
+  });
+  const [totalBrands, setTotalBrands] = useState(0);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchCategoriesAndBrands = async () => {
+      try {
+        const categoriesResponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/categories/getCategoryStats`
+        );
+        setCategoryStats(categoriesResponse.data);
+
+        const brandsResponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/brands/getbrandcount`
+        );
+        setTotalBrands(brandsResponse.data.totalBrands);
+      } catch (error) {
+        console.error("Error fetching categories or brands:", error);
+      }
+    };
+    fetchCategoriesAndBrands();
+  }, []);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsresponse = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/api/products/all`
+        );
+
+        setProducts(productsresponse.data.totalDocuments);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  const dashboard = [
+    { name: "Total Category", number: categoryStats.totalCategories },
+    { name: "Sub Category", number: categoryStats.totalSubCategories },
+    { name: "Total Products", number: products },
+    { name: "Total Brands", number: totalBrands },
     {
       name: "Add New Products",
       link: "/reboots/product/admin-dashboard-add-new-product",
@@ -36,7 +77,7 @@ const AdminHome = () => {
   return (
     <AdminDashboardTemplate>
       <div className="grid grid-cols-3 gap-6 p-4">
-        {categories.map((item, index) =>
+        {dashboard.map((item, index) =>
           item.link ? (
             <Link
               to={item.link}
