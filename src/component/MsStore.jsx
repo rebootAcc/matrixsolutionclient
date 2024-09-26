@@ -3,7 +3,7 @@ import OurProductHomeDesign from "./OurProductHomeDesign";
 
 const MsStore = () => {
   const content = {
-    heading: "PC PERIPHERALS",
+    heading: "MS STORE",
     link: "/products/MS STORE",
   };
 
