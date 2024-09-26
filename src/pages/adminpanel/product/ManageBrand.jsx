@@ -10,6 +10,7 @@ const ManageBrand = () => {
   const [editedBrandName, setEditedBrandName] = useState("");
   const [editedBrandImage, setEditedBrandImage] = useState(null);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchBrands();
   }, []);
@@ -80,6 +81,19 @@ const ManageBrand = () => {
     }
   };
 
+  const handleBrandImageChange = (event) => {
+    const file = event.target.files[0];
+    const maxSize = 512 * 1024; // 512 KB in bytes
+
+    if (file) {
+      if (file.size > maxSize) {
+        alert("The image size must be less than 512 KB.");
+        return;
+      }
+      setEditedBrandImage(file); // Set the brand image if it's valid
+    }
+  };
+
   return (
     <AdminDashboardTemplate>
       <div className="flex flex-col gap-8">
@@ -117,16 +131,14 @@ const ManageBrand = () => {
                         <input
                           type="file"
                           accept="image/*"
-                          onChange={(e) =>
-                            setEditedBrandImage(e.target.files[0])
-                          }
+                          onChange={handleBrandImageChange}
                           className="w-full h-[3.5rem] p-2 focus:outline-none outline-[#5BC0DE] bg-[#2A3038] text-white rounded-sm"
                         />
                       </div>
                       <div>
                         <img
                           src={brand.brandimage}
-                          alt=""
+                          alt="brand"
                           className="h-[3rem] w-fit"
                         />
                       </div>
@@ -154,7 +166,7 @@ const ManageBrand = () => {
                       <div>
                         <img
                           src={brand.brandimage}
-                          alt=""
+                          alt="brand"
                           className="h-[3rem] w-fit"
                         />
                       </div>

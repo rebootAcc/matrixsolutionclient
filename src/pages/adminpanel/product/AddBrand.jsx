@@ -14,7 +14,16 @@ const AddBrand = () => {
   };
 
   const handleBrandImageChange = (event) => {
-    setBrandImage(event.target.files[0]);
+    const file = event.target.files[0];
+    const maxSize = 512 * 1024; // 512 KB in bytes
+
+    if (file) {
+      if (file.size > maxSize) {
+        alert("The image size must be less than 512 KB.");
+        return;
+      }
+      setBrandImage(file); // Set the brand image if it's valid
+    }
   };
 
   const handleSubmit = async (event) => {

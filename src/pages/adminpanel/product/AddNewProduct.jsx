@@ -73,9 +73,8 @@ const AddNewProduct = () => {
   const handleImageChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
 
-    // Validate file type and size
     const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-    const maxSize = 2 * 1024 * 1024; // 2MB limit per image
+    const maxSize = 512 * 1024;
 
     for (const file of selectedFiles) {
       if (!validImageTypes.includes(file.type)) {
@@ -83,7 +82,7 @@ const AddNewProduct = () => {
         return;
       }
       if (file.size > maxSize) {
-        alert("Each image must be less than 2MB.");
+        alert("Each image must be less than 512kb.");
         return;
       }
     }
@@ -107,9 +106,31 @@ const AddNewProduct = () => {
 
   const handleThumbnailChange = (event) => {
     const file = event.target.files[0];
+
+    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+    const maxSize = 512 * 1024;
+
+    if (!file) return;
+    if (!validImageTypes.includes(file.type)) {
+      alert(
+        "Only jpeg, png, and gif image formats are allowed for thumbnails."
+      );
+      return;
+    }
+    if (file.size > maxSize) {
+      alert("The thumbnail image must be less than 512kb.");
+      return;
+    }
+
     setProductThumbnailImage(file);
     setThumbnailPreview(URL.createObjectURL(file));
   };
+
+  // const handleThumbnailChange = (event) => {
+  //   const file = event.target.files[0];
+  //   setProductThumbnailImage(file);
+  //   setThumbnailPreview(URL.createObjectURL(file));
+  // };
 
   const handleEditSpecification = (index) => {
     setEditingIndex(index);

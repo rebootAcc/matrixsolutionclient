@@ -143,15 +143,41 @@ const EditProduct = () => {
   // Handle image and thumbnail changes
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages([...images, ...files]); // Add new images to the state
+    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+    const maxSize = 512 * 1024; // 512 KB
 
-    const newImagesPreviews = files.map((file) => ({
-      url: URL.createObjectURL(file),
-      type: "new", // Mark these as new
-    }));
+    const validFiles = [];
+    const newImagePreviews = [];
 
-    // Append new image previews without removing the existing ones
-    setAllImagePreviews([...allImagePreviews, ...newImagesPreviews]);
+    for (const file of files) {
+      if (!validImageTypes.includes(file.type)) {
+        alert("Only jpeg, png, and gif image formats are allowed.");
+        continue; // Skip invalid types
+      }
+
+      if (file.size > maxSize) {
+        alert(`Image ${file.name} exceeds the 512 KB size limit.`);
+        continue; // Skip files larger than 512 KB
+      }
+
+      // If the file passes both checks, add it to the valid files array
+      validFiles.push(file);
+
+      // Create a preview URL for the valid file
+      newImagePreviews.push({
+        url: URL.createObjectURL(file),
+        type: "new",
+      });
+    }
+
+    // Add valid images to the state
+    setImages((prevImages) => [...prevImages, ...validFiles]);
+
+    // Add valid image previews to the state
+    setAllImagePreviews((prevPreviews) => [
+      ...prevPreviews,
+      ...newImagePreviews,
+    ]);
   };
 
   // Handle removing an image (works for both existing and new images)
@@ -170,6 +196,21 @@ const EditProduct = () => {
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
+
+    const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+    const maxSize = 512 * 1024;
+
+    if (!file) return;
+    if (!validImageTypes.includes(file.type)) {
+      alert(
+        "Only jpeg, png, and gif image formats are allowed for thumbnails."
+      );
+      return;
+    }
+    if (file.size > maxSize) {
+      alert("The thumbnail image must be less than 512kb.");
+      return;
+    }
     setProductThumbnailImage(file);
     setThumbnailPreview(URL.createObjectURL(file));
   };
